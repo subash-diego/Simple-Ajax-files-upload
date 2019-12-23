@@ -1,0 +1,15 @@
+.sd-js-img-preview {
+	width: 100px;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid;
+}
+
+#sd-file-contents td {
+    width: 20%;
+    text-align: center;
+}
+
+.sd-img-err{
+	color: red;
+}
