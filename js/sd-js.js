@@ -14,6 +14,7 @@ var _allowed_file_type = [
 							'image/gif',
 							'video/mp4'
 						];
+
 var _ctup;  
 
 function check_files(This){
@@ -76,7 +77,7 @@ function show_images(file,i,err = ""){
 
       			else{
 
-      				__info += '<td><img src="images/file.js" class="sd-js-img-preview"></td>';
+      				__info += '<td><img src="images/file.jpg" class="sd-js-img-preview"></td>';
       			}
       					
       		  __info += '<td>'+file.name+'</td>'+
@@ -89,11 +90,12 @@ function show_images(file,i,err = ""){
 										    	'<div class="progress-bar" id="sd-js-progress_'+i+'" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>'+
 				                    		'</div>'+
 				                    		'<span class="sd-img-err_'+i+' sd-img-err">'+err+'</span>'+
+				                    		'<span class="sd-img-spd_'+i+' sd-img-spd"></span>'+
 				                    	'</td>'+ (err == "" ? 
 				                    	'<td><button class="btn btn-xs btn-primary upload-btn" onclick="upload_file('+i+')">Upload</button></td>' : "<td></td>" )+
 				                    	'<td><button class="btn btn-xs btn-danger delete-btn" onclick="remove_file('+i+')">Delete</button></td>';
       					}else{
-      						__info += '<td> Upload Complete</td>'+
+      						__info += '<td><span style="color:green;">Upload Complete</span></td>'+
 	  						'<td></td>'+
       						'<td><button class="btn btn-xs btn-danger delete-btn" onclick="remove_file('+i+')">Delete</button></td>';
       					}
@@ -132,7 +134,8 @@ function upload_file(j,module= function(){}){
 				"mimeType": "multipart/form-data",
 				"data": formData,
 				xhr: function() {
-				    var xhr = new window.XMLHttpRequest();
+				    var xhr 		= new window.XMLHttpRequest();
+				    var started_at 	= new Date();
 				    xhr.upload.addEventListener("progress", function(evt) {
 				        
 				        $('#sd-js-section_'+j).find('.upload-btn').attr('disabled','disabled');
@@ -142,13 +145,26 @@ function upload_file(j,module= function(){}){
 				            //Do something with upload progress here
 							$('#sd-js-progress_'+j).css('width',progress.toFixed(0)+'%');
 				            $('#sd-js-progress_'+j).text(progress.toFixed(1)+'%');
+				            //Connection Speed
+				            var seconds_elapsed   = ( new Date().getTime() - started_at.getTime() )/1000;
+			                var bytes_per_second  = seconds_elapsed ? evt.loaded / seconds_elapsed : 0 ;
+			                var Kbytes_per_second = bytes_per_second / 1000 ;
+			                var remaining_bytes   = evt.total - evt.loaded;
+			                var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
+			                //End Connection Speed
 				            if(progress.toFixed(0) == 100) {
 				                $('#sd-js-progress_'+j).css('background-color','green');
 				                $('#sd-js-section_'+j).find('.upload-btn').attr('disabled','disabled');
 				                window.file_list[j]["is_uploaded"] = true;
 				                module(true);
+				                $('.sd-img-spd_'+j).html('');
+				            }else{
+			                	$('.sd-img-spd_'+j).html('S/p : '+ Kbytes_per_second.toFixed(1) + 'kb/s R/m : '+ (remaining_bytes/1024).toFixed(1) + 'Kbs C/p : ' + seconds_remaining.toFixed(1) + 'Sec');
 				            }
+				            window.file_list[j]["is_uploaded_size"] = evt.loaded;
 				        }
+
+				        //console.log(evt);
 
 				   }, false);
 				   return xhr;
@@ -160,11 +176,13 @@ function upload_file(j,module= function(){}){
 
 						window.file_list[j]["upload_info"] = __res.data;
 						$('.sd-img-err_'+j).html(__res.message);
+						$('.sd-img-err_'+j).css('color','green');
 
 					}else{
 
 						window.file_list[j]['is_uploaded'] = false;
 						$('.sd-img-err_'+j).html(__res.message);
+						$('.sd-img-err_'+j).css('color','red');
 						$('#sd-js-progress_'+j).css('width','0%');
 				        $('#sd-js-progress_'+j).text('0%');
 				        $('#sd-js-progress_'+j).css('background-color','blue');
@@ -242,7 +260,7 @@ function delete_all(){
 	$('#sd-js-files').val('');
 	check_files();
 	window._brk = true;
-	window._ctup != 'undefined' ?  window._ctup.abort():null;
+	window._ctup != undefined ?  window._ctup.abort():null;
 	$('.sd-js-btn-upload-all').show();
 }
 
@@ -251,7 +269,7 @@ function stop_all(){
 		window._brk = true;
 		$('.sd-js-btn-stop-all').hide();
 		$('.sd-js-btn-restart-all').show();
-		window._ctup != 'undefined' ?  window._ctup.abort():null;
+		window._ctup != undefined ?  window._ctup.abort():null;
 		//$('.sd-js-btn-upload-all').show();
 	}
 }

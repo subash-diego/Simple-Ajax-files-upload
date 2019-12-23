@@ -1,5 +1,5 @@
 .sd-js-img-preview {
-	width: 100px;
+	width: 150px;
     margin: 5px;
     padding: 5px;
     border: 1px solid;
@@ -12,4 +12,9 @@
 
 .sd-img-err{
 	color: red;
+}
+
+.sd-img-spd{
+	font-size: 9px;
+    color: blue;
 }
