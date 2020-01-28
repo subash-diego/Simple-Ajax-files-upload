@@ -5,7 +5,7 @@ var _is_upload = false;
 var _is_stop   = false;
 var _is_restart= false;
 var _is_delete = false;
-var _max_allowed_file = 10;
+var _max_allowed_file = 200;
 var _allowed_file_type = [
 							'image/jpeg',
 							'image/png',
@@ -92,7 +92,8 @@ function show_images(file,i,err = ""){
 				                    		'<span class="sd-img-err_'+i+' sd-img-err">'+err+'</span>'+
 				                    		'<span class="sd-img-spd_'+i+' sd-img-spd"></span>'+
 				                    	'</td>'+ (err == "" ? 
-				                    	'<td><button class="btn btn-xs btn-primary upload-btn" onclick="upload_file('+i+')">Upload</button></td>' : "<td></td>" )+
+				                    	//'<td><button class="btn btn-xs btn-primary upload-btn" onclick="upload_file('+i+')">Upload</button></td>' : "<td></td>" )+
+				                    	'<td></td>' : "<td></td>" )+
 				                    	'<td><button class="btn btn-xs btn-danger delete-btn" onclick="remove_file('+i+')">Delete</button></td>';
       					}else{
       						__info += '<td><span style="color:green;">Upload Complete</span></td>'+
