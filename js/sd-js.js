@@ -119,82 +119,89 @@ function upload_file(j,module= function(){}){
 
 		if(url!="" && method!=""){
 
-			var formData = new FormData();
+			/* Is flagged file */
 
-			formData.append('files',window.file_list[j]);
-			formData.append('_token',$('input[name="_token"]').val());
+			// if(window.file_list[j].hasOwnProperty('is_uploaded')){
 
-			window._ctup = $.ajax({
-				//"async": false,
-				"crossDomain": true,
-				"url": url,
-				"method": method,
-				"processData": false,
-				"contentType": false,
-				"mimeType": "multipart/form-data",
-				"data": formData,
-				xhr: function() {
-				    var xhr 		= new window.XMLHttpRequest();
-				    var started_at 	= new Date();
-				    xhr.upload.addEventListener("progress", function(evt) {
-				        
-				        $('#sd-js-section_'+j).find('.upload-btn').attr('disabled','disabled');
+			// }else{
 
-				        if (evt.lengthComputable) {
-				            var progress = (evt.loaded / evt.total) * 100;
-				            //Do something with upload progress here
-							$('#sd-js-progress_'+j).css('width',progress.toFixed(0)+'%');
-				            $('#sd-js-progress_'+j).text(progress.toFixed(1)+'%');
-				            //Connection Speed
-				            var seconds_elapsed   = ( new Date().getTime() - started_at.getTime() )/1000;
-			                var bytes_per_second  = seconds_elapsed ? evt.loaded / seconds_elapsed : 0 ;
-			                var Kbytes_per_second = bytes_per_second / 1000 ;
-			                var remaining_bytes   = evt.total - evt.loaded;
-			                var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
-			                //End Connection Speed
-				            if(progress.toFixed(0) == 100) {
-				                $('#sd-js-progress_'+j).css('background-color','green');
-				                $('#sd-js-section_'+j).find('.upload-btn').attr('disabled','disabled');
-				                window.file_list[j]["is_uploaded"] = true;
-				                module(true);
-				                $('.sd-img-spd_'+j).html('');
-				            }else{
-			                	$('.sd-img-spd_'+j).html('S/p : '+ Kbytes_per_second.toFixed(1) + 'kb/s R/m : '+ (remaining_bytes/1024).toFixed(1) + 'Kbs C/p : ' + seconds_remaining.toFixed(1) + 'Sec');
-				            }
-				            window.file_list[j]["is_uploaded_size"] = evt.loaded;
-				        }
+				var formData = new FormData();
 
-				        //console.log(evt);
+				formData.append('files',window.file_list[j]);
+				formData.append('_token',$('input[name="_token"]').val());
 
-				   }, false);
-				   return xhr;
-				},
-				success : function(response){
-					var __res = typeof response != "object" && response != "" ? JSON.parse(response) : [];
+				window._ctup = $.ajax({
+					//"async": false,
+					"crossDomain": true,
+					"url": url,
+					"method": method,
+					"processData": false,
+					"contentType": false,
+					"mimeType": "multipart/form-data",
+					"data": formData,
+					xhr: function() {
+					    var xhr 		= new window.XMLHttpRequest();
+					    var started_at 	= new Date();
+					    xhr.upload.addEventListener("progress", function(evt) {
+					        
+					        $('#sd-js-section_'+j).find('.upload-btn').attr('disabled','disabled');
 
-					if(__res.status){
+					        if (evt.lengthComputable) {
+					            var progress = (evt.loaded / evt.total) * 100;
+					            //Do something with upload progress here
+								$('#sd-js-progress_'+j).css('width',progress.toFixed(0)+'%');
+					            $('#sd-js-progress_'+j).text(progress.toFixed(1)+'%');
+					            //Connection Speed
+					            var seconds_elapsed   = ( new Date().getTime() - started_at.getTime() )/1000;
+				                var bytes_per_second  = seconds_elapsed ? evt.loaded / seconds_elapsed : 0 ;
+				                var Kbytes_per_second = bytes_per_second / 1000 ;
+				                var remaining_bytes   = evt.total - evt.loaded;
+				                var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
+				                //End Connection Speed
+					            window.file_list[j]["is_uploaded"] = true;
+					            if(progress.toFixed(0) == 100) {
+					                $('#sd-js-progress_'+j).css('background-color','green');
+					                $('#sd-js-section_'+j).find('.upload-btn').attr('disabled','disabled');
+					                module(true);
+					                $('.sd-img-spd_'+j).html('');
+					            }else{
+				                	$('.sd-img-spd_'+j).html('S/p : '+ Kbytes_per_second.toFixed(1) + 'kb/s R/m : '+ (remaining_bytes/1024).toFixed(1) + 'Kbs C/p : ' + seconds_remaining.toFixed(1) + 'Sec');
+					            }
+					            window.file_list[j]["is_uploaded_size"] = evt.loaded;
+					        }
 
-						window.file_list[j]["upload_info"] = __res.data;
-						$('.sd-img-err_'+j).html(__res.message);
-						$('.sd-img-err_'+j).css('color','green');
+					        //console.log(evt);
 
-					}else{
+					   }, false);
+					   return xhr;
+					},
+					success : function(response){
+						var __res = typeof response != "object" && response != "" ? JSON.parse(response) : [];
 
+						if(__res.status){
+
+							window.file_list[j]["upload_info"] = __res.data;
+							$('.sd-img-err_'+j).html(__res.message);
+							$('.sd-img-err_'+j).css('color','green');
+
+						}else{
+
+							window.file_list[j]['is_uploaded'] = false;
+							$('.sd-img-err_'+j).html(__res.message);
+							$('.sd-img-err_'+j).css('color','red');
+							$('#sd-js-progress_'+j).css('width','0%');
+					        $('#sd-js-progress_'+j).text('0%');
+					        $('#sd-js-progress_'+j).css('background-color','blue');
+					        $('#sd-js-section_'+j).find('.upload-btn').removeAttr('disabled');
+						}
+					},
+					fail: function(xhr, textStatus, errorThrown){
 						window.file_list[j]['is_uploaded'] = false;
-						$('.sd-img-err_'+j).html(__res.message);
-						$('.sd-img-err_'+j).css('color','red');
-						$('#sd-js-progress_'+j).css('width','0%');
-				        $('#sd-js-progress_'+j).text('0%');
-				        $('#sd-js-progress_'+j).css('background-color','blue');
-				        $('#sd-js-section_'+j).find('.upload-btn').removeAttr('disabled');
+						$('.sd-img-err_'+j).html(errorThrown);
+						console.log(errorThrown);
 					}
-				},
-				fail: function(xhr, textStatus, errorThrown){
-					window.file_list[j]['is_uploaded'] = false;
-					$('.sd-img-err_'+j).html(errorThrown);
-					console.log(errorThrown);
-				}
-			});
+				});
+			//}
 
 		}else{
 			$('.sd-img-err_'+j).html("Form method & action is needed.");
