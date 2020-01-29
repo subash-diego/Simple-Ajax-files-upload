@@ -18,3 +18,19 @@
 	font-size: 9px;
     color: blue;
 }
+
+/*Upload*/
+.upload_photos_brow {padding: 30px;border: 1px solid #ddd;margin-bottom: 10px;}
+.upload_photos_brow .form-group {margin-bottom: 0px;}
+.upload_photos_btn {text-align: center;}
+.upload_indv_img img {width: 100%;height: 100%;object-fit: cover;border-radius: 5px;}
+.upload_indv_photos {margin-bottom: 20px;border: 1px solid #ddd;border-radius: 5px;}
+.upload_indv_img {height: 200px;border-radius: 5px;position: relative;}
+.upload_indv_on_img {position: absolute;top: 0;background: rgba(0,0,0,0.5);width: 100%;height: 100%;border-radius: 5px 5px 0 0;padding: 10px;}
+.upload_indv_head {background: #f1f1f1;padding: 10px 5px;}
+.upload_indv_head h4 {font-size: 16px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.upload_indv_ph_size {text-align: left;float: left;color: #fff;}
+.upload_indv_delete {position: absolute;right: 10px;top: 0;display: none;}
+.upload_indv_delete .upload_inv_del_icon a {color: #ffffff;font-size: 24px;}
+.upload_indv_photos:hover .upload_indv_delete {display: block;}
+.upload_indv_prog {position: absolute;z-index: 9;width: 100%;top: 33%;padding: 10%;}
