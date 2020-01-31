@@ -353,3 +353,54 @@ function restart_all(){
 	}
 }
 
+function images_to_json(file,rtr = function(){}){
+
+	var reader = new FileReader();
+	reader.readAsDataURL(file);
+    reader.onload = function(e) {
+    	rtr(e.target.result);
+    }
+}
+
+function file_to_json(input_file_id = ""){
+
+	var files_to_json = {
+							status : false,
+							message: "No data found",
+							data   : {}
+						};
+
+	if(input_file_id!="" && document.getElementById(input_file_id)!=null){
+
+		if($('#'+input_file_id).get(0).files.length){
+
+			var __all_files = [];
+
+			$.each($('#'+input_file_id).get(0).files,function(key,value){
+
+				images_to_json(value,function(response){
+
+					__all_files.push(response);
+				
+				});
+
+			});
+
+			files_to_json.data    = __all_files;
+			files_to_json.status = true;
+			files_to_json.message= "Files processed success";
+
+		}else{
+
+			files_to_json.message = "No files selected";
+		}
+
+	}else{
+
+		files_to_json.message = "Input file id not found";
+	}
+
+	return files_to_json;
+}
+
+
